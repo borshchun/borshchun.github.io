@@ -4,10 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Целитильница Мария Семигал - Гадание и Предсказания</title>
-        <meta name="google-site-verification" content="IrS9NDGAhVSUbrftBCvmtI5KMqdj3sSkoMx1n7OtULk" />
+
+    <!-- Тег подтверждения Google Search Console -->
+    <meta name="google-site-verification" content="IrS9NDGAhVSUbrftBCvmtI5KMqdj3sSkoMx1n7OtULk" />
+
+    <!-- Подключение Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Подключение шрифта Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Подключение библиотеки Three.js для 3D-эффектов -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
     <style>
         /* Основные стили для тела страницы */
         body {
@@ -23,7 +30,7 @@
             background: linear-gradient(to bottom right, #2d3748, #4a5568); /* Градиент для карточек */
         }
         .btn-gradient {
-            background: linear: linear-gradient(to right, #805ad5, #a78bfa); /* Градиент для кнопок */
+            background: linear-gradient(to right, #805ad5, #a78bfa); /* Градиент для кнопок */
             transition: all 0.3s ease;
         }
         .btn-gradient:hover {
@@ -50,6 +57,76 @@
         }
         .delay-200 { animation-delay: 0.2s; }
         .delay-400 { animation-delay: 0.4s; }
+
+        /* Стили для Three.js Canvas */
+        #heroCanvas {
+            display: block; /* Убираем лишние отступы */
+        }
+
+        /* Стили для модального окна (оставлены, хотя форма удалена, на случай, если понадобится для других целей) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: #2d3748; /* Цвет фона модального окна */
+            padding: 2rem;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            color: #e2e8f0;
+            max-width: 90%;
+            width: 400px;
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Новые стили для эффектов навигационных ссылок */
+        .nav-link-effect {
+            transition: all 0.3s ease;
+            /* Начальные стили, которые будут изменяться при наведении */
+            background-color: transparent;
+            color: #e2e8f0; /* Исходный цвет текста */
+        }
+        .nav-link-effect:hover {
+            background-color: #6b46c1; /* Более глубокий фиолетовый */
+            color: #ffffff; /* Белый текст при наведении */
+            transform: translateY(-2px) scale(1.05); /* Поднять и слегка увеличить */
+            box-shadow: 0 5px 15px rgba(107, 70, 193, 0.4); /* Ненавязчивая тень */
+        }
+
+        /* Анимация для логотипа-глаза */
+        @keyframes eyeShimmer {
+            0% { fill: #a78bfa; } /* Светло-фиолетовый */
+            25% { fill: #805ad5; } /* Средний фиолетовый */
+            50% { fill: #4c51bf; } /* Сине-фиолетовый */
+            75% { fill: #6b46c1; } /* Темно-фиолетовый */
+            100% { fill: #a78bfa; } /* Возврат к светло-фиолетовому */
+        }
+
+        .eye-logo {
+            animation: eyeShimmer 5s infinite alternate; /* 5 секунд, бесконечно, туда-обратно */
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -57,22 +134,23 @@
     <!-- Header / Навигационная панель -->
     <header class="bg-gray-900 shadow-custom py-4">
         <nav class="container mx-auto flex justify-between items-center px-4">
-            <!-- Логотип -->
+            <!-- Логотип - глаз с надписью "Всевидящая" -->
             <div class="flex items-center space-x-2">
-                <!-- SVG иконка глаза для мистического логотипа -->
-                <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                <!-- SVG иконка глаза для мистического логотипа с анимацией -->
+                <svg class="w-10 h-10 text-purple-400 eye-logo" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 4.5C7 4.5 2.73 7.61 0 12c2.73 4.39 7 7.5 12 7.5s9.27-3.11 12-7.5c-2.73-4.39-7-7.5-12-7.5zm0 13c-3.03 0-5.5-2.47-5.5-5.5S8.97 6.5 12 6.5s5.5 2.47 5.5 5.5-2.47 5.5-5.5 5.5zm0-9c-1.93 0-3.5 1.57-3.5 3.5s1.57 3.5 3.5 3.5 3.5-1.57 3.5-3.5-1.57-3.5-3.5-3.5z"/>
                 </svg>
-                <a href="#" class="text-2xl font-bold text-white tracking-wide">Целитильница Мария Семигал</a>
+                <span class="text-xl font-semibold text-white ml-2">Всевидящая</span>
             </div>
 
             <!-- Навигационные ссылки для десктопа -->
-            <div class="hidden md:flex space-x-6">
-                <a href="#hero" class="text-gray-300 hover:text-purple-400 transition duration-300">Главная</a>
-                <a href="#services" class="text-gray-300 hover:text-purple-400 transition duration-300">Услуги</a>
-                <a href="#about" class="text-gray-300 hover:text-purple-400 transition duration-300">Обо мне</a>
-                <a href="#contact" class="text-gray-300 hover:text-purple-400 transition duration-300">Контакты</a>
+            <div class="hidden md:flex space-x-2">
+                <!-- Ссылка "Главная" без дополнительных эффектов, только стандартный hover Tailwind -->
+                <a href="#hero" class="nav-link text-gray-300 hover:bg-purple-700 hover:text-white rounded-full px-2 py-1 transition duration-300">Главная</a>
+                <!-- Остальные ссылки с новым эффектом -->
+                <a href="#services" class="nav-link nav-link-effect text-gray-300 rounded-full px-2 py-1">Услуги</a>
+                <a href="#about" class="nav-link nav-link-effect text-gray-300 rounded-full px-2 py-1">Обо мне</a>
+                <a href="#contact" class="nav-link nav-link-effect text-gray-300 rounded-full px-2 py-1">Контакты</a>
             </div>
 
             <!-- Мобильное меню (бургер) -->
@@ -87,19 +165,24 @@
 
         <!-- Мобильное выпадающее меню -->
         <div id="mobile-menu" class="md:hidden hidden bg-gray-800 py-2">
-            <a href="#hero" class="block px-4 py-2 text-gray-300 hover:bg-gray-700">Главная</a>
-            <a href="#services" class="block px-4 py-2 text-gray-300 hover:bg-gray-700">Услуги</a>
-            <a href="#about" class="block px-4 py-2 text-gray-300 hover:bg-gray-700">Обо мне</a>
-            <a href="#contact" class="block px-4 py-2 text-gray-300 hover:bg-gray-700">Контакты</a>
+            <a href="#hero" class="nav-link block px-4 py-2 text-gray-300 hover:bg-gray-700">Главная</a>
+            <a href="#services" class="nav-link block px-4 py-2 text-gray-300 hover:bg-gray-700">Услуги</a>
+            <a href="#about" class="nav-link block px-4 py-2 text-gray-300 hover:bg-gray-700">Обо мне</a>
+            <a href="#contact" class="nav-link block px-4 py-2 text-gray-300 hover:bg-gray-700">Контакты</a>
         </div>
     </header>
 
     <main>
         <!-- Блок 1: Главный экран (Hero Section) -->
-        <section id="hero" class="relative bg-cover bg-center h-screen flex items-center justify-center text-center p-4"
-            style="background-color: #2a003a;"> <!-- Изменено: теперь это сплошной цвет без текста -->
-            <div class="absolute inset-0 bg-black opacity-60"></div>
-            <div class="relative z-10 max-w-3xl mx-auto">
+        <section id="hero" class="relative h-screen flex items-center justify-center text-center p-4 overflow-hidden">
+            <!-- Canvas для Three.js фоновых эффектов -->
+            <canvas id="heroCanvas" class="absolute inset-0 w-full h-full z-0"></canvas>
+
+            <!-- Наложение для затемнения фона и улучшения читаемости текста -->
+            <div class="absolute inset-0 bg-black opacity-60 z-10"></div>
+
+            <!-- Основное содержимое (текст и кнопка) -->
+            <div class="relative z-20 max-w-3xl mx-auto">
                 <h1 class="text-5xl md:text-6xl font-extrabold text-white leading-tight mb-6 animate-fade-in-up">
                     Откройте Свою Судьбу с Целитильницей Марией Семигал
                 </h1>
@@ -113,8 +196,8 @@
         </section>
 
         <!-- Блок 2: Услуги (Services Section) -->
-        <section id="services" class="py-16 bg-gray-800">
-            <div class="container mx-auto px-4 text-center">
+        <section id="services" class="relative py-16 bg-gray-800 overflow-hidden">
+            <div class="container mx-auto px-4 text-center relative z-10">
                 <h2 class="text-4xl font-bold text-white mb-12">Мои Услуги</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <!-- Карточка услуги 1: Гадание на Таро -->
@@ -123,6 +206,10 @@
                             <!-- Иконка Таро (SVG) -->
                             <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h10m-9 4h4m-4 4h4m-4-8h.01M17 16h.01M12 4v16m-4-4h8a2 2 0 002-2V6a2 2 0 00-2-2H8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                            </svg>
+                            <!-- Дополнительный элемент: Колода карт -->
+                            <svg class="w-6 h-6 mx-auto mt-2 text-purple-300 opacity-70" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M21 2H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM7 18V4h14l.01 14H7zm4-10h2v2h-2zm0 4h2v2h-2zm4-4h2v2h-2zm0 4h2v2h-2z"/>
                             </svg>
                         </div>
                         <h3 class="text-2xl font-semibold text-white mb-4">Гадание на Таро</h3>
@@ -136,7 +223,11 @@
                         <div class="text-purple-400 mb-4">
                             <!-- Иконка руки (SVG) -->
                             <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.055 0 0112 2.944a11.955 11.055 0 01-8.618 3.04A12.001 12.001 0 002.92 12c0 2.872 1.155 5.515 3.04 7.418M12 21c2.872 0 5.515-1.155 7.418-3.04A12.001 12.001 0 0021.08 12c0-2.872-1.155-5.515-3.04-7.418"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.001 12.001 0 002.92 12c0 2.872 1.155 5.515 3.04 7.418M12 21c2.872 0 5.515-1.155 7.418-3.04A12.001 12.001 0 0021.08 12c0-2.872-1.155-5.515-3.04-7.418"></path>
+                            </svg>
+                            <!-- Дополнительный элемент: Линии ладони -->
+                            <svg class="w-6 h-6 mx-auto mt-2 text-purple-300 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354C13.901 3.528 15.657 3 17.5 3 20.537 3 23 5.463 23 8.5c0 1.25-.407 2.417-1.096 3.364M1 12c2.73 4.39 7 7.5 12 7.5s9.27-3.11 12-7.5c-2.73-4.39-7-7.5-12-7.5S3.73 7.61 1 12z"></path>
                             </svg>
                         </div>
                         <h3 class="text-2xl font-semibold text-white mb-4">Хиромантия</h3>
@@ -152,10 +243,104 @@
                             <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.329 1.176l1.519 4.674c.3.921-.755 1.688-1.539 1.175l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.513-1.838-.254-1.539-1.175l1.519-4.674a1 1 0 00-.329-1.176l-3.976-2.888c-.784-.57-.381-1.81.588-1.81h4.915a1 1 0 00.95-.69l1.519-4.674z"></path>
                             </svg>
+                            <!-- Дополнительный элемент: Звезды и планеты -->
+                            <svg class="w-6 h-6 mx-auto mt-2 text-purple-300 opacity-70" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm0 18c-3.313 0-6-2.687-6-6s2.687-6 6-6 6 2.687 6 6-2.687 6-6 6z"/>
+                            </svg>
                         </div>
                         <h3 class="text-2xl font-semibold text-white mb-4">Астрология</h3>
                         <p class="text-gray-300">
                             Составление натальных карт и анализ влияния планет на вашу жизнь и судьбу.
+                        </p>
+                    </div>
+
+                    <!-- Новая услуга 4: Снятие порчи и сглаза -->
+                    <div class="card-gradient rounded-xl p-8 shadow-custom transform hover:scale-105 transition duration-300">
+                        <div class="text-purple-400 mb-4">
+                            <!-- Иконка защиты (щит) -->
+                            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.001 12.001 0 002.92 12c0 2.872 1.155 5.515 3.04 7.418M12 21c2.872 0 5.515-1.155 7.418-3.04A12.001 12.001 0 0021.08 12c0-2.872-1.155-5.515-3.04-7.418"></path>
+                            </svg>
+                            <!-- Дополнительный элемент: Амулет/талисман -->
+                            <svg class="w-6 h-6 mx-auto mt-2 text-purple-300 opacity-70" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2c-3.866 0-7 3.134-7 7 0 3.879 2.529 7.171 6 8.448V22h2v-4.552c3.471-1.277 6-4.569 6-8.448 0-3.866-3.134-7-7-7zM12 17c-2.761 0-5-2.239-5-5s2.239-5 5-5 5 2.239 5 5-2.239 5-5 5z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-semibold text-white mb-4">Снятие порчи и сглаза</h3>
+                        <p class="text-gray-300">
+                            Очищение энергетического поля от негативных влияний, восстановление удачи и благополучия.
+                        </p>
+                    </div>
+
+                    <!-- Новая услуга 5: Любовная магия -->
+                    <div class="card-gradient rounded-xl p-8 shadow-custom transform hover:scale-105 transition duration-300">
+                        <div class="text-purple-400 mb-4">
+                            <!-- Иконка сердца -->
+                            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                            <!-- Дополнительный элемент: Роза -->
+                            <svg class="w-6 h-6 mx-auto mt-2 text-purple-300 opacity-70" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2c-2.761 0-5 2.239-5 5s2.239 5 5 5 5-2.239 5-5-2.239-5-5-5zm0 14c-3.866 0-7 3.134-7 7h14c0-3.866-3.134-7-7-7z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-semibold text-white mb-4">Любовная магия</h3>
+                        <p class="text-gray-300">
+                            Помощь в привлечении любви, укреплении отношений и возвращении гармонии в личную жизнь.
+                        </p>
+                    </div>
+
+                    <!-- Новая услуга 6: Денежная магия -->
+                    <div class="card-gradient rounded-xl p-8 shadow-custom transform hover:scale-105 transition duration-300">
+                        <div class="text-purple-400 mb-4">
+                            <!-- Иконка денег (монета/мешок) -->
+                            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z"></path>
+                            </svg>
+                            <!-- Дополнительный элемент: Стопка монет -->
+                            <svg class="w-6 h-6 mx-auto mt-2 text-purple-300 opacity-70" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8zm-1-12h2v6h-2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-semibold text-white mb-4">Денежная магия</h3>
+                        <p class="text-gray-300">
+                            Привлечение финансового благополучия, открытие денежных потоков и устранение препятствий на пути к изобилию.
+                        </p>
+                    </div>
+
+                    <!-- Новая услуга 7: Духовное целительство -->
+                    <div class="card-gradient rounded-xl p-8 shadow-custom transform hover:scale-105 transition duration-300">
+                        <div class="text-purple-400 mb-4">
+                            <!-- Иконка руки с сиянием -->
+                            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.329 1.176l1.519 4.674c.3.921-.755 1.688-1.539 1.175l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.513-1.838-.254-1.539-1.175l1.519-4.674a1 1 0 00-.329-1.176l-3.976-2.888c-.784-.57-.381-1.81.588-1.81h4.915a1 1 0 00.95-.69l1.519-4.674z"></path>
+                            </svg>
+                            <!-- Дополнительный элемент: Спираль энергии -->
+                            <svg class="w-6 h-6 mx-auto mt-2 text-purple-300 opacity-70" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8zm-1-12h2v6h-2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-semibold text-white mb-4">Духовное целительство</h3>
+                        <p class="text-gray-300">
+                            Гармонизация чакр, снятие энергетических блоков и восстановление жизненной силы.
+                        </p>
+                    </div>
+
+                     <!-- Новая услуга 8: Защитные обереги -->
+                    <div class="card-gradient rounded-xl p-8 shadow-custom transform hover:scale-105 transition duration-300">
+                        <div class="text-purple-400 mb-4">
+                            <!-- Иконка амулета -->
+                            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m-8-4V7l8 4m0 0l-8 4m8-4v10l-8 4"></path>
+                            </svg>
+                            <!-- Дополнительный элемент: Щит -->
+                            <svg class="w-6 h-6 mx-auto mt-2 text-purple-300 opacity-70" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-semibold text-white mb-4">Защитные обереги</h3>
+                        <p class="text-gray-300">
+                            Создание индивидуальных амулетов и талисманов для защиты от негатива и привлечения удачи.
                         </p>
                     </div>
                 </div>
@@ -163,61 +348,64 @@
         </section>
 
         <!-- Блок 3: Обо мне и Контакты (About & Contact Section) -->
-        <section id="about" class="py-16 bg-gray-900">
-            <div class="container mx-auto px-4 text-center">
+        <section id="about" class="relative py-16 bg-gray-900 overflow-hidden">
+            <div class="container mx-auto px-4 text-center relative z-10">
                 <h2 class="text-4xl font-bold text-white mb-12">О Целитильнице Марии Семигал</h2>
-                <div class="max-w-4xl mx-auto text-lg text-gray-300 leading-relaxed mb-12">
-                    <p class="mb-4">
-                        Меня зовут Мария Семигал, и я потомственная целительница и предсказательница с многолетним опытом. Мой дар помогает людям найти ответы на их вопросы, исцелить душевные раны и обрести гармонию в жизни. Я использую древние знания и интуицию, чтобы направлять вас на истинный путь.
-                    </p>
-                    <p>
-                        Моя миссия — не просто предсказывать будущее, но и давать вам инструменты для его формирования, помогая вам принимать осознанные решения и раскрывать свой внутренний потенциал.
-                    </p>
+                <div class="flex flex-col md:flex-row items-center justify-center max-w-5xl mx-auto gap-8">
+                    <!-- Место для фотографии профиля -->
+                    <div class="flex-shrink-0">
+                        <img src="https://placehold.co/200x200/4a5568/e2e8f0?text=Фото+Марии+Семигал" alt="Фото Марии Семигал" class="rounded-full w-48 h-48 object-cover shadow-lg border-4 border-purple-500">
+                    </div>
+                    <div class="text-lg text-gray-300 leading-relaxed text-left md:text-left">
+                        <p class="mb-4">
+                            Меня зовут Мария Семигал, и я потомственная целительница и предсказательница с **более чем 10-летним опытом и глубокими познаниями** в области эзотерики. Мой дар помогает людям найти ответы на их вопросы, исцелить душевные раны и обрести гармонию в жизни. Я использую древние знания и интуицию, чтобы направлять вас на истинный путь.
+                        </p>
+                        <p class="mb-4">
+                            За годы моей практики **множество благодарных клиентов оставили успешные отзывы**, подтверждающие эффективность моей работы. Я горжусь тем, что могу быть проводником для тех, кто ищет ясности и поддержки.
+                        </p>
+                        <p>
+                            Моя миссия — не просто предсказывать будущее, но и давать вам инструменты для его формирования, помогая вам принимать осознанные решения и раскрывать свой внутренний потенциал.
+                        </p>
+                    </div>
                 </div>
             </div>
         </section>
 
         <section id="contact" class="py-16 bg-gray-800">
-            <div class="container mx-auto px-4 text-center">
+            <div class="container mx-auto px-4 text-center relative z-10">
                 <h2 class="text-4xl font-bold text-white mb-12">Свяжитесь со мной</h2>
                 <div class="max-w-2xl mx-auto bg-gray-700 rounded-xl p-8 shadow-custom">
                     <p class="text-lg text-gray-300 mb-6">
-                        Готовы узнать свою судьбу или получить духовную поддержку? Свяжитесь со мной любым удобным способом.
+                        Для связи со мной используйте следующие контакты:
                     </p>
-                    <div class="space-y-4">
-                        <p class="text-xl text-white">
-                            <strong class="text-purple-400">Email:</strong> <a href="mailto:mariyasemigal@gmail.com" class="hover:underline">mariyasemigal@gmail.com</a>
-                        </p>
+                    
+                    <div class="space-y-4 mb-6">
                         <p class="text-xl text-white">
                             <strong class="text-purple-400">Телефон:</strong> <a href="tel:+380953534966" class="hover:underline">+380953534966</a>
                         </p>
                         <p class="text-xl text-white">
-                            <strong class="text-purple-400">Facebook:</strong> <a href="https://www.facebook.com/MariyaSemigal" target="_blank" class="hover:underline">@Mariya Semigal</a>
+                            <strong class="text-purple-400">Email:</strong> <a href="mailto:mariyasemigal@gmail.com" class="hover:underline">mariyasemigal@gmail.com</a>
                         </p>
-                    </div>
-                    <div class="mt-8">
-                        <p class="text-gray-400 text-sm">
-                            Вы также можете найти меня в социальных сетях:
+                        <p class="text-xl text-white">
+                            <strong class="text-purple-400">Telegram:</strong> <a href="https://t.me/MariyaSemigal" target="_blank" class="hover:underline">@MariyaSemigal</a>
                         </p>
-                        <div class="flex justify-center space-x-6 mt-4">
-                            <a href="https://www.facebook.com/MariyaSemigal" target="_blank" class="text-purple-300 hover:text-purple-500 transition duration-300">
-                                <!-- Иконка Facebook (SVG) -->
-                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33V22C17.34 21.128 22 16.991 22 12z" clip-rule="evenodd" />
-                                </svg>
-                            </a>
-                            <!-- Иконка Instagram (SVG) - оставлена как пример, если понадобится -->
-                            <a href="#" class="text-purple-300 hover:text-purple-500 transition duration-300">
-                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm3.337 1.838h-6.674c-1.838 0-3.337 1.499-3.337 3.337v6.674c0 1.838 1.499 3.337 3.337 3.337h6.674c1.838 0 3.337-1.499 3.337-3.337v-6.674c0-1.838-1.499-3.337-3.337-3.337zM12 15.5c-1.933 0-3.5-1.567-3.5-3.5s1.567-3.5 3.5-3.5 3.5 1.567 3.5 3.5-1.567 3.5-3.5 3.5zM12 10c-.828 0-1.5.672-1.5 1.5s.672 1.5 1.5 1.5 1.5-.672 1.5-1.5-.672-1.5-1.5-1.5zM17.5 6.5c-.552 0-1-.448-1-1s.448-1 1-1 1 .448 1 1-.448 1-1 1z" clip-rule="evenodd" />
-                                </svg>
-                            </a>
-                        </div>
+                        <p class="text-xl text-white">
+                            <strong class="text-purple-400">Facebook:</strong> <a href="https://www.facebook.com/MariyaSemigal" target="_blank" class="hover:underline">MariyaSemigal</a>
+                        </p>
                     </div>
                 </div>
             </div>
         </section>
     </main>
+
+    <!-- Модальное окно для сообщения об отправке (оставлено, но не используется) -->
+    <div id="successModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 class="text-2xl font-bold text-white mb-4">Сообщение отправлено!</h3>
+            <p class="text-gray-300 mb-6">Благодарю за ваше обращение. Я свяжусь с вами в ближайшее время.</p>
+            <button id="closeModal" class="btn-gradient text-white font-semibold py-2 px-6 rounded-full">Закрыть</button>
+        </div>
+    </div>
 
     <!-- Footer / Футер -->
     <footer class="bg-gray-900 py-8 text-center text-gray-400 text-sm">
@@ -236,12 +424,185 @@
             mobileMenu.classList.toggle('hidden');
         });
 
-        // Закрытие мобильного меню при клике на ссылку
-        mobileMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
+        // Плавная прокрутка для навигационных ссылок
+        document.querySelectorAll('a.nav-link').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault(); // Предотвращаем стандартный переход
+
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+
+                if (targetElement) {
+                    // Используем scrollIntoView с smooth поведением
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+
+                // Закрываем мобильное меню после клика
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                }
             });
         });
+
+        // Three.js setup
+        let scene, camera, renderer, particles, particleMaterial, pointLight;
+        let mouseX = 0, mouseY = 0;
+        let windowHalfX = window.innerWidth / 2;
+        let windowHalfY = window.innerHeight / 2;
+
+        /**
+         * Инициализирует сцену Three.js, камеру, рендерер и частицы.
+         * Создает систему частиц с рандомными позициями и цветами,
+         * добавляя их в сцену для создания мистического эффекта.
+         */
+        function initThreeJS() {
+            const canvas = document.getElementById('heroCanvas'); // Получаем canvas элемент
+
+            scene = new THREE.Scene(); // Создаем новую сцену
+            // Создаем перспективную камеру: угол обзора, соотношение сторон, ближняя плоскость отсечения, дальняя плоскость отсечения
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            // Создаем WebGL рендерер с прозрачным фоном
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight); // Устанавливаем размер рендерера
+            renderer.setPixelRatio(window.devicePixelRatio); // Устанавливаем плотность пикселей для четкости
+
+            // Настройка частиц
+            const particleCount = 1500; // Увеличил количество частиц для более плотного эффекта
+            const particlesGeometry = new THREE.BufferGeometry(); // Геометрия для частиц
+            const positions = new Float32Array(particleCount * 3); // Массив для позиций (x, y, z для каждой частицы)
+            const colors = new Float32Array(particleCount * 3); // Массив для цветов (r, g, b для каждой частицы)
+
+            const color = new THREE.Color(); // Вспомогательный объект для установки цвета
+
+            // Заполняем массивы позиций и цветов для каждой частицы
+            for (let i = 0; i < particleCount; i++) {
+                // Позиции: случайные координаты в диапазоне от -500 до 500
+                positions[i * 3 + 0] = (Math.random() * 2 - 1) * 500; // x
+                positions[i * 3 + 1] = (Math.random() * 2 - 1) * 500; // y
+                positions[i * 3 + 2] = (Math.random() * 2 - 1) * 500; // z
+
+                // Цвета: тонкие оттенки фиолетового/синего для свечения
+                // HSL: Hue (оттенок), Saturation (насыщенность), Lightness (яркость)
+                color.setHSL(0.6 + Math.random() * 0.2, 0.7, 0.5 + Math.random() * 0.3);
+                colors[i * 3 + 0] = color.r;
+                colors[i * 3 + 1] = color.g;
+                colors[i * 3 + 2] = color.b;
+            }
+
+            // Присваиваем атрибуты геометрии
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            // Материал для частиц: размер, использование цветов вершин, прозрачность, смешивание для эффекта свечения
+            particleMaterial = new THREE.PointsMaterial({
+                size: 2, // Размер каждой частицы
+                vertexColors: true, // Использовать цвета, заданные для вершин
+                transparent: true, // Включить прозрачность
+                opacity: 0.8, // Общая непрозрачность
+                blending: THREE.AdditiveBlending // Режим смешивания для эффекта свечения (добавление цвета)
+            });
+
+            // Создаем объект частиц
+            particles = new THREE.Points(particlesGeometry, particleMaterial);
+            scene.add(particles); // Добавляем частицы на сцену
+
+            // Добавляем точечный источник света для дополнительного мистического свечения
+            pointLight = new THREE.PointLight(0x800080, 1, 0); // Цвет фиолетовый, интенсивность 1, расстояние 0 (бесконечно)
+            pointLight.position.set(0, 0, 50); // Позиция света
+            scene.add(pointLight);
+
+            camera.position.z = 200; // Устанавливаем начальную позицию камеры
+
+            // Добавляем слушателей событий для интерактивности с мышью/тачскрином
+            document.addEventListener('mousemove', onDocumentMouseMove, false);
+            document.addEventListener('touchstart', onDocumentTouchStart, false);
+            document.addEventListener('touchmove', onDocumentTouchMove, false);
+
+            // Слушатель события изменения размера окна для адаптивности
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        /**
+         * Обработчик изменения размера окна.
+         * Обновляет соотношение сторон камеры и размер рендерера для адаптивности.
+         */
+        function onWindowResize() {
+            windowHalfX = window.innerWidth / 2;
+            windowHalfY = window.innerHeight / 2;
+
+            camera.aspect = window.innerWidth / window.innerHeight; // Обновляем соотношение сторон камеры
+            camera.updateProjectionMatrix(); // Обновляем матрицу проекции камеры
+            renderer.setSize(window.innerWidth, window.innerHeight); // Обновляем размер рендерера
+        }
+
+        /**
+         * Обработчик движения мыши.
+         * Обновляет координаты мыши для управления камерой.
+         */
+        function onDocumentMouseMove(event) {
+            mouseX = event.clientX - windowHalfX;
+            mouseY = event.clientY - windowHalfY;
+        }
+
+        /**
+         * Обработчик начала касания (для тачскринов).
+         * Обновляет координаты касания для управления камерой.
+         */
+        function onDocumentTouchStart(event) {
+            if (event.touches.length === 1) { // Если одно касание
+                event.preventDefault(); // Предотвращаем стандартное действие браузера
+                mouseX = event.touches[0].pageX - windowHalfX;
+                mouseY = event.touches[0].pageY - windowHalfY;
+            }
+        }
+
+        /**
+         * Обработчик движения касания (для тачскринов).
+         * Обновляет координаты касания для управления камерой.
+         */
+        function onDocumentTouchMove(event) {
+            if (event.touches.length === 1) { // Если одно касание
+                event.preventDefault(); // Предотвращаем стандартное действие браузера
+                mouseX = event.touches[0].pageX - windowHalfX;
+                mouseY = event.touches[0].pageY - windowHalfY;
+            }
+        }
+
+        /**
+         * Главный цикл анимации Three.js.
+         * Обновляет положение камеры и вращение частиц, затем рендерит сцену.
+         */
+        function animate() {
+            requestAnimationFrame(animate); // Запрашиваем следующий кадр анимации
+
+            // Плавное перемещение камеры в сторону курсора мыши (уменьшенная реактивность)
+            camera.position.x += (mouseX * 0.03 - camera.position.x) * 0.03;
+            camera.position.y += (-mouseY * 0.03 - camera.position.y) * 0.03;
+            camera.lookAt(scene.position); // Камера всегда смотрит на центр сцены
+
+            // Вращение частиц для динамического эффекта (более медленная ротация)
+            const time = performance.now() * 0.001; // Получаем время в секундах
+            particles.rotation.x = Math.sin(time * 0.03) * 0.1; // Медленное колебание по X
+            particles.rotation.y += 0.0005; // Постоянное вращение по Y (еще медленнее)
+            particles.rotation.z = Math.cos(time * 0.02) * 0.05; // Медленное колебание по Z
+
+            // Пульсирующий эффект размера частиц (более плавная пульсация)
+            particleMaterial.size = 2 + Math.sin(time * 2) * 0.3;
+
+            // Медленное изменение цвета точечного источника света
+            const hue = (time * 0.02) % 1; // Медленно меняем оттенок от 0 до 1
+            pointLight.color.setHSL(hue, 0.8, 0.6); // Насыщенность 0.8, яркость 0.6
+
+            renderer.render(scene, camera); // Рендерим сцену с текущей камерой
+        }
+
+        // Запускаем инициализацию Three.js и анимацию после полной загрузки страницы
+        window.onload = function () {
+            initThreeJS();
+            animate();
+        }
     </script>
 </body>
 </html>
