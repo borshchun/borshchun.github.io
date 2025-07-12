@@ -107,6 +107,9 @@
             /* Начальные стили, которые будут изменяться при наведении */
             background-color: transparent;
             color: #e2e8f0; /* Исходный цвет текста */
+            padding: 0.75rem 1.25rem; /* Увеличенный padding для кнопок */
+            border-radius: 0.75rem; /* Более выраженные закругленные углы */
+            font-size: 1.125rem; /* text-lg */
         }
         .nav-link-effect:hover {
             background-color: #6b46c1; /* Более глубокий фиолетовый */
@@ -127,6 +130,19 @@
         .eye-logo {
             animation: eyeShimmer 5s infinite alternate; /* 5 секунд, бесконечно, туда-обратно */
         }
+
+        /* Стили для плавного открытия/закрытия мобильного меню */
+        #mobile-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, opacity 0.5s ease-out; /* Плавный переход */
+            opacity: 0;
+        }
+
+        #mobile-menu.is-open {
+            max-height: 300px; /* Достаточно большое значение, чтобы вместить все пункты меню */
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -136,21 +152,21 @@
         <nav class="container mx-auto flex justify-between items-center px-4">
             <!-- Логотип - глаз с надписью "Всевидящая" -->
             <div class="flex items-center space-x-2">
-                <!-- SVG иконка глаза для мистического логотипа с анимацией -->
-                <svg class="w-10 h-10 text-purple-400 eye-logo" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <!-- SVG иконка глаза для мистического логотипа с анимацией (увеличенная) -->
+                <svg class="w-14 h-14 text-purple-400 eye-logo" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 4.5C7 4.5 2.73 7.61 0 12c2.73 4.39 7 7.5 12 7.5s9.27-3.11 12-7.5c-2.73-4.39-7-7.5-12-7.5zm0 13c-3.03 0-5.5-2.47-5.5-5.5S8.97 6.5 12 6.5s5.5 2.47 5.5 5.5-2.47 5.5-5.5 5.5zm0-9c-1.93 0-3.5 1.57-3.5 3.5s1.57 3.5 3.5 3.5 3.5-1.57 3.5-3.5-1.57-3.5-3.5-3.5z"/>
                 </svg>
-                <span class="text-xl font-semibold text-white ml-2">Всевидящая</span>
+                <span class="text-3xl font-semibold text-white ml-3">Всевидящая</span> <!-- Увеличенный шрифт -->
             </div>
 
             <!-- Навигационные ссылки для десктопа -->
             <div class="hidden md:flex space-x-2">
                 <!-- Ссылка "Главная" без дополнительных эффектов, только стандартный hover Tailwind -->
-                <a href="#hero" class="nav-link text-gray-300 hover:bg-purple-700 hover:text-white rounded-full px-2 py-1 transition duration-300">Главная</a>
-                <!-- Остальные ссылки с новым эффектом -->
-                <a href="#services" class="nav-link nav-link-effect text-gray-300 rounded-full px-2 py-1">Услуги</a>
-                <a href="#about" class="nav-link nav-link-effect text-gray-300 rounded-full px-2 py-1">Обо мне</a>
-                <a href="#contact" class="nav-link nav-link-effect text-gray-300 rounded-full px-2 py-1">Контакты</a>
+                <a href="#hero" class="nav-link text-gray-300 hover:bg-purple-700 hover:text-white rounded-full px-4 py-2 text-lg transition duration-300">Главная</a>
+                <!-- Остальные ссылки с новым эффектом (увеличенные) -->
+                <a href="#services" class="nav-link nav-link-effect text-gray-300">Услуги</a>
+                <a href="#about" class="nav-link nav-link-effect text-gray-300">Обо мне</a>
+                <a href="#contact" class="nav-link nav-link-effect text-gray-300">Контакты</a>
             </div>
 
             <!-- Мобильное меню (бургер) -->
@@ -164,7 +180,7 @@
         </nav>
 
         <!-- Мобильное выпадающее меню -->
-        <div id="mobile-menu" class="md:hidden hidden bg-gray-800 py-2">
+        <div id="mobile-menu" class="md:hidden bg-gray-800 py-2">
             <a href="#hero" class="nav-link block px-4 py-2 text-gray-300 hover:bg-gray-700">Главная</a>
             <a href="#services" class="nav-link block px-4 py-2 text-gray-300 hover:bg-gray-700">Услуги</a>
             <a href="#about" class="nav-link block px-4 py-2 text-gray-300 hover:bg-gray-700">Обо мне</a>
@@ -421,7 +437,8 @@
         const mobileMenu = document.getElementById('mobile-menu');
 
         mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
+            // Переключаем класс 'is-open' вместо 'hidden'
+            mobileMenu.classList.toggle('is-open');
         });
 
         // Плавная прокрутка для навигационных ссылок
@@ -439,9 +456,9 @@
                     });
                 }
 
-                // Закрываем мобильное меню после клика
-                if (!mobileMenu.classList.contains('hidden')) {
-                    mobileMenu.classList.add('hidden');
+                // Закрываем мобильное меню после клика, если оно открыто
+                if (mobileMenu.classList.contains('is-open')) {
+                    mobileMenu.classList.remove('is-open');
                 }
             });
         });
